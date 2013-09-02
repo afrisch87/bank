@@ -13,8 +13,8 @@ class program {
    
         $obj = new homepage();
       } 
-      //print_r($_REQUEST);
-
+  print_r($_SERVER['REQUEST_METHOD']);
+      
     }
 }  
 
@@ -44,10 +44,7 @@ class program {
     public function __construct() {
       echo '<h1>Welcome to your bank</h1>';
    
-      $form= '<FORM action="bankproject.php?page=login" method ="post">
-             <INPUT type="submit" value="login">
-            </FORM>';
-      echo $form;
+      echo '<a href="bankproject.php?page=login">Login</a>'.'<br>';;
       
       echo '<a href="bankproject.php?page=newuser">Register for a new account</a>'.'<br>';
 
@@ -55,22 +52,49 @@ class program {
   }
   class login extends page{
   
-  public function __construct() {  
-  $form = '<FORM action="bankproject.php?page=debitcredit" method="post">
-    <P>
-    <LABEL for="username">Username: </LABEL>
-              <INPUT type="text" id="username"><BR>
-    <LABEL for="password">Password </LABEL>
-              <INPUT type="password" id="password"><BR>
-    <INPUT type="submit" value="Send"> <INPUT type="reset">
-    </P>
-   </FORM>';
+    public $username;
+    public $password;
+    
+    public function get() {  
+      $form = '<FORM action="bankproject.php?page=login" method="post">
+        <P>
+        <LABEL for="username">Username: </LABEL>
+              <INPUT type="text" name="username" id="username"><BR>
+        <LABEL for="password">Password </LABEL>
+              <INPUT type="password" name="password" id="password"><BR>
+        <INPUT type="submit" value="Send"> <INPUT type="reset">
+        </P>
+       </FORM>';
   
-  echo $form;
+      echo $form;
+    }
+    
+    public function post(){
+      $row = 1; 
+      if(($handle = fopen("userinfo.csv", "r")) !== FALSE) {
+        while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+     
+            $this->username = $_POST['username'];
+            echo "Hello, $this->username<br>";
+        
+          if ($handle = fopen('userinfo.csv', "r") !== FALSE  ){
+      
+            echo "Welcome to your account!<br>";
+
+         
+          }
+        }
+      }
+    }
+
+    function makePrimaryKey($key_name, $records) {	
+	foreach($records as $record) {
+		$index_name = $record[$key_name];
+		unset($record[$key_name]);
+		$new_records[$index_name] = $record;
+	}
 
   }
-  } 
-
   class newuser extends page{
   
     public $username;
@@ -112,7 +136,7 @@ class program {
       $this->accountnumber = mt_rand(100000,999999);   
       
       array_unshift($this->userinfo, "$this->accountnumber");
-      
+      array_unshift($this->userinfo, "$this->username");
       echo '<br> Hi, ' . "$this->firstname " . $this->lastname . '<br>'; 
       echo 'Your account number is: ' . $this->accountnumber . '<br>';   
      
@@ -126,18 +150,13 @@ class program {
     }
     public function __destruct() {
     if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['firstname']) && !empty($_POST['lastname'])) { 
-     $full = $this->userinfo;
+     $userinfo = $this->userinfo;
      $fp = fopen('userinfo.csv', 'a');
-      fputcsv($fp, $full);
+      fputcsv($fp, $userinfo);
 
       fclose($fp); 
-       echo '<FORM action="bankproject.php?page=login" method="post">
-    <P>
-        <INPUT type="submit" value="Login to your Account"><BR>
-    </p>
-    </FORM>';
+       echo '<br><a href="bankproject.php?page=login"> Login to your account</a>';
      }
-     // echo '<br>'.'<a href "bankproject.php?page=newuser"> Return to New User Form </a>' . '<br>'; 
   }
  }
 
@@ -163,4 +182,5 @@ class program {
   }
  }
 
+  
 ?>
