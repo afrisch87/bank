@@ -52,9 +52,10 @@ class program {
   }
   class login extends page{
   
-    public $username;
+    public $username; 
     public $password;
-    
+    public $records = array();
+        
     public function get() {  
       $form = '<FORM action="bankproject.php?page=login" method="post">
         <P>
@@ -68,33 +69,44 @@ class program {
   
       echo $form;
     }
-    
+
+  /* public function makePrimaryKey($key_name, $records) { print_r($records);  
+      foreach($records as $record) {
+                $index_name = $record[$key_name];
+                unset($record[$key_name]);
+                $new_records[$index_name] = $record;   
+      }
+        return $new_records; 
+    } */   
     public function post(){
+      $username = $_POST['username'];
+      $password = $_POST['password'];
       $row = 1; 
       if(($handle = fopen("userinfo.csv", "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
-     
-            $this->username = $_POST['username'];
-            echo "Hello, $this->username<br>";
-        
-          if ($handle = fopen('userinfo.csv', "r") !== FALSE  ){
-      
-            echo "Welcome to your account!<br>";
-
-         
-          }
+          //  foreach($records as $k => $v) {
+ 
+          $this->records[] = $data;
         }
       }
-    }
+         fclose($handle);   
 
-    function makePrimaryKey($key_name, $records) {	
-	foreach($records as $record) {
-		$index_name = $record[$key_name];
-		unset($record[$key_name]);
-		$new_records[$index_name] = $record;
-	}
+/*            $pass = in_array("$password", $records);
+              if(in_array("$username",$records) && $password == $pass)   {
 
+                echo "<br>Hello, $username<br>";
+
+                echo "Welcome to your account!<br>";
+              } else { 
+           
+                echo 'The information you entered is incorrect. Please try again';
+       
+                echo '<br><a href="bankproject.php?page=login"> Return to Login  Page</a><br>'; 
+              }
+          } */  
+    } 
   }
+  
   class newuser extends page{
   
     public $username;
