@@ -61,7 +61,7 @@ class program {
         <P>
         <LABEL for="username">Username: </LABEL>
               <INPUT type="text" name="username" id="username"><BR>
-        <LABEL for="password">Password </LABEL>
+        <LABEL for="password"> Password: </LABEL>
               <INPUT type="password" name="password" id="password"><BR>
         <INPUT type="submit" value="Send"> <INPUT type="reset">
         </P>
@@ -70,43 +70,33 @@ class program {
       echo $form;
     }
 
-  /* public function makePrimaryKey($key_name, $records) { print_r($records);  
-      foreach($records as $record) {
-                $index_name = $record[$key_name];
-                unset($record[$key_name]);
-                $new_records[$index_name] = $record;   
-      }
-        return $new_records; 
-    } */   
+
     public function post(){
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $row = 1; 
+      
       if(($handle = fopen("userinfo.csv", "r")) !== FALSE) {
         while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
-          //  foreach($records as $k => $v) {
- 
-          $this->records[] = $data;
+          foreach($data as $record) {
+            $user = $data[1];
+            $account = $data[0];
+            $pass = $data[2];
+            $first = $data[3];
+            $last = $data[4];
+            }}}
+            if($username == $user && $password == $pass) { 
+            
+                echo 'Hi '.  "$first " . "$last.". '<br>'. 'Your account number is '. "$account." .'<br>'  ;      
+                echo '<br><a href="bankproject.php?page=debitcredit"> Continue to Transactions </a><br>'; 
+                fclose($handle);
+            } elseif($username !== $user ||  $password !== $pass) {
+
+                echo 'The information you entered is incorrect. Please try again. <br>';
+                echo '<a href="bankproject.php?page=login">Login</a>'.'<br>';
+              }  
+          }
         }
-      }
-         fclose($handle);   
-
-/*            $pass = in_array("$password", $records);
-              if(in_array("$username",$records) && $password == $pass)   {
-
-                echo "<br>Hello, $username<br>";
-
-                echo "Welcome to your account!<br>";
-              } else { 
-           
-                echo 'The information you entered is incorrect. Please try again';
-       
-                echo '<br><a href="bankproject.php?page=login"> Return to Login  Page</a><br>'; 
-              }
-          } */  
-    } 
-  }
-  
+    
   class newuser extends page{
   
     public $username;
@@ -148,7 +138,6 @@ class program {
       $this->accountnumber = mt_rand(100000,999999);   
       
       array_unshift($this->userinfo, "$this->accountnumber");
-      array_unshift($this->userinfo, "$this->username");
       echo '<br> Hi, ' . "$this->firstname " . $this->lastname . '<br>'; 
       echo 'Your account number is: ' . $this->accountnumber . '<br>';   
      
@@ -161,12 +150,14 @@ class program {
     } 
     }
     public function __destruct() {
-    if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['firstname']) && !empty($_POST['lastname'])) { 
-     $userinfo = $this->userinfo;
-     $fp = fopen('userinfo.csv', 'a');
-      fputcsv($fp, $userinfo);
+      if (!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['firstname']) && !empty($_POST['lastname'])) { 
+     
+        $userinfo = $this->userinfo;
+        $fp = fopen('userinfo.csv', 'a');
+      
+        fputcsv($fp, $userinfo);
 
-      fclose($fp); 
+        fclose($fp); 
        echo '<br><a href="bankproject.php?page=login"> Login to your account</a>';
      }
   }
